@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ForwardRewindButton">
+        <attr name="isForward" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="TimeDisplay">
+        <attr name="showDuration" format="boolean" />
+    </declare-styleable>
+
+    <attr name="playerSeekBarStyle" format="reference" />
+
+    <!-- Styleable untuk PlayerSeekBar -->
+    <declare-styleable name="PlayerSeekBar">
+        <attr name="seekBarProgressColor" format="color" />
+        <attr name="seekBarBackgroundColor" format="color" />
+        <attr name="seekBarThumbColor" format="color" />
+    </declare-styleable>
+</resources>

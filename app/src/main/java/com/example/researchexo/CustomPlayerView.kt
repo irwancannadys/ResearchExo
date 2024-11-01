@@ -4,16 +4,14 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import com.example.researchexo.base.PlayerControl
 
 @UnstableApi
 class CustomPlayerView @JvmOverloads constructor(
@@ -22,36 +20,26 @@ class CustomPlayerView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    private val surfaceView = SurfaceView(context)
     private var player: Player? = null
-    private lateinit var playPauseButton: ImageButton
-    private lateinit var rewindButton: ImageButton
-    private lateinit var forwardButton: ImageButton
-    private lateinit var progressBar: SeekBar
-    private lateinit var durationView: TextView
-    private lateinit var currentTimeView: TextView
-    private lateinit var controllerContainer: View
-    private lateinit var surfaceView: SurfaceView
+    private var controllerContainer: View? = null
     private var controllerTimeout = 3000L
     private var isControllerVisible = true
     private val hideHandler = Handler(Looper.getMainLooper())
-    private val updateProgressHandler = Handler(Looper.getMainLooper())
+    private val controls = mutableListOf<PlayerControl>()
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.custom_player_view, this, true)
-        initializeViews()
+        // Add surface view as first child
+        addView(surfaceView, LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            LayoutParams.MATCH_PARENT
+        ))
         setupSurface()
-        setupListeners()
-    }
 
-    private fun initializeViews() {
-        surfaceView = findViewById(R.id.surfaceView)
-        playPauseButton = findViewById(R.id.playPauseButton)
-        rewindButton = findViewById(R.id.rewindButton)
-        forwardButton = findViewById(R.id.forwardButton)
-        progressBar = findViewById(R.id.progressBar)
-        durationView = findViewById(R.id.durationView)
-        currentTimeView = findViewById(R.id.currentTimeView)
-        controllerContainer = findViewById(R.id.controllerContainer)
+        // Set click listener for show/hide controls
+        surfaceView.setOnClickListener {
+            toggleControllerVisibility()
+        }
     }
 
     private fun setupSurface() {
@@ -61,6 +49,7 @@ class CustomPlayerView @JvmOverloads constructor(
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                // Surface size or format changed
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -69,147 +58,47 @@ class CustomPlayerView @JvmOverloads constructor(
         })
     }
 
-    private fun setupListeners() {
-        playPauseButton.setOnClickListener {
-            player?.let {
-                if (it.isPlaying) {
-                    it.pause()
-                } else {
-                    it.play()
-                }
-                updatePlayPauseButton()
-            }
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        if (childCount > 1) {
+            controllerContainer = getChildAt(1)
         }
+        findAndRegisterControls(this)
+    }
 
-        rewindButton.setOnClickListener {
-            player?.seekBack()
+    private fun findAndRegisterControls(view: View) {
+        if (view is PlayerControl) {
+            controls.add(view)
+            player?.let { view.attachPlayer(it) }
         }
-
-        forwardButton.setOnClickListener {
-            player?.seekForward()
-        }
-
-        progressBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser) {
-                    player?.seekTo(progress.toLong())
-                }
-                updateCurrentTime()
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                findAndRegisterControls(view.getChildAt(i))
             }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                removeControllerHideCallbacks()
-                stopProgressUpdate()
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                scheduleControllerHide()
-                startProgressUpdate()
-            }
-        })
-
-        surfaceView.setOnClickListener {
-            toggleControllerVisibility()
         }
     }
 
     fun setPlayer(newPlayer: Player) {
+        // Detach current player
         player?.let { oldPlayer ->
-            oldPlayer.removeListener(playerListener)
+            controls.forEach { it.detachPlayer() }
             if (surfaceView.holder.surface != null) {
                 oldPlayer.setVideoSurface(null)
             }
         }
 
+        // Attach new player
         player = newPlayer.also { player ->
             if (surfaceView.holder.surface != null) {
                 player.setVideoSurface(surfaceView.holder.surface)
             }
-            player.addListener(playerListener)
-            updateAll()
-            startProgressUpdate()
+            controls.forEach { it.attachPlayer(player) }
+            updateControllerVisibility()
         }
     }
 
-    private val playerListener = object : Player.Listener {
-        override fun onEvents(player: Player, events: Player.Events) {
-            updateAll()
-        }
-
-        override fun onIsPlayingChanged(isPlaying: Boolean) {
-            updatePlayPauseButton()
-            if (isPlaying) {
-                scheduleControllerHide()
-                startProgressUpdate()
-            } else {
-                removeControllerHideCallbacks()
-                stopProgressUpdate()
-            }
-        }
-    }
-
-    private fun updateAll() {
-        updatePlayPauseButton()
-        updateProgress()
-        updateDuration()
-    }
-
-    private fun updatePlayPauseButton() {
-        val isPlaying = player?.isPlaying ?: false
-        playPauseButton.setImageResource(
-            if (isPlaying) R.drawable.ic_pause
-            else R.drawable.ic_play
-        )
-    }
-
-    private fun updateProgress() {
-        player?.let {
-            val duration = it.duration
-            val position = it.currentPosition
-
-            if (duration > 0) {
-                progressBar.max = duration.toInt()
-                progressBar.progress = position.toInt()
-                updateCurrentTime()
-            }
-        }
-    }
-
-    private fun updateCurrentTime() {
-        player?.let {
-            currentTimeView.text = formatTime(it.currentPosition)
-        }
-    }
-
-    private fun updateDuration() {
-        player?.let {
-            val duration = it.duration
-            if (duration > 0) {
-                durationView.text = formatTime(duration)
-            }
-        }
-    }
-
-    private val progressUpdateRunnable = object : Runnable {
-        override fun run() {
-            updateProgress()
-            updateProgressHandler.postDelayed(this, 1000)
-        }
-    }
-
-    private fun startProgressUpdate() {
-        updateProgressHandler.post(progressUpdateRunnable)
-    }
-
-    private fun stopProgressUpdate() {
-        updateProgressHandler.removeCallbacks(progressUpdateRunnable)
-    }
-
-    private fun formatTime(timeMs: Long): String {
-        val totalSeconds = timeMs / 1000
-        val minutes = totalSeconds / 60
-        val seconds = totalSeconds % 60
-        return String.format("%02d:%02d", minutes, seconds)
+    fun setControllerTimeout(timeoutMs: Long) {
+        controllerTimeout = timeoutMs
     }
 
     private fun toggleControllerVisibility() {
@@ -221,35 +110,53 @@ class CustomPlayerView @JvmOverloads constructor(
     }
 
     private fun showController() {
-        controllerContainer.visibility = View.VISIBLE
+        controllerContainer?.visibility = View.VISIBLE
         isControllerVisible = true
-        scheduleControllerHide()
+        scheduleHideController()
     }
 
     private fun hideController() {
-        controllerContainer.visibility = View.GONE
+        controllerContainer?.visibility = View.GONE
         isControllerVisible = false
     }
 
-    private fun scheduleControllerHide() {
-        removeControllerHideCallbacks()
+    private fun scheduleHideController() {
+        hideHandler.removeCallbacksAndMessages(null)
         if (player?.isPlaying == true) {
             hideHandler.postDelayed({ hideController() }, controllerTimeout)
         }
     }
 
-    private fun removeControllerHideCallbacks() {
-        hideHandler.removeCallbacksAndMessages(null)
+    private fun updateControllerVisibility() {
+        controllerContainer?.let {
+            it.visibility = if (isControllerVisible) View.VISIBLE else View.GONE
+        }
     }
+//
+//    override fun onDetachedFromWindow() {
+//        super.onDetachedFromWindow()
+//        hideHandler.removeCallbacksAndMessages(null)
+//        controls.forEach { it.detachPlayer() }
+//        player?.setVideoSurface(null)
+//        player = null
+//    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        removeControllerHideCallbacks()
-        stopProgressUpdate()
-        player?.let {
-            it.removeListener(playerListener)
-            it.setVideoSurface(null)
+        // Cleanup handlers
+        hideHandler.removeCallbacksAndMessages(null)
+
+        // Cleanup all controls
+        controls.forEach { control ->
+            control.detachPlayer()
         }
+        controls.clear()
+
+        // Cleanup surface
+        player?.setVideoSurface(null)
         player = null
+
+        // Cleanup views
+        controllerContainer = null
     }
 }

@@ -13,4 +13,15 @@
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
     </style>
+
+    <attr name="forwardRewindButtonStyle" format="reference" />
+
+    <!-- Theme -->
+    <style name="Theme.App" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Other theme attributes -->
+
+        <!-- Default style untuk ForwardRewindButton -->
+        <item name="forwardRewindButtonStyle">@style/Widget.App.ForwardRewindButton</item>
+        <item name="playerSeekBarStyle">@style/Widget.App.PlayerSeekBar</item>
+    </style>
 </resources>

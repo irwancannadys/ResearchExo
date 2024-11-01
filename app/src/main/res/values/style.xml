@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.App.ForwardRewindButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <!-- Style untuk Forward Button -->
+    <style name="Widget.App.ForwardRewindButton.Forward">
+        <item name="isForward">true</item>
+        <item name="android:contentDescription">Forward</item>
+    </style>
+
+    <!-- Style untuk Rewind Button -->
+    <style name="Widget.App.ForwardRewindButton.Rewind">
+        <item name="isForward">false</item>
+        <item name="android:contentDescription">Rewind</item>
+    </style>
+
+    <style name="Widget.App.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/seekbar_progress</item>
+        <item name="android:thumb">@drawable/seekbar_thumb</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+    <style name="Widget.App.PlayerSeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="seekBarProgressColor">#FFFFFF</item>
+        <item name="seekBarBackgroundColor">#4DFFFFFF</item>
+        <item name="seekBarThumbColor">#FFFFFF</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+    </style>
+
+
+</resources>
