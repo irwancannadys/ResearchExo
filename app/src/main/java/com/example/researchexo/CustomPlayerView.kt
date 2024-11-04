@@ -29,14 +29,12 @@ class CustomPlayerView @JvmOverloads constructor(
     private val controls = mutableListOf<PlayerControl>()
 
     init {
-        // Add surface view as first child
         addView(surfaceView, LayoutParams(
             LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT
         ))
         setupSurface()
 
-        // Set click listener for show/hide controls
         surfaceView.setOnClickListener {
             toggleControllerVisibility()
         }
@@ -48,9 +46,7 @@ class CustomPlayerView @JvmOverloads constructor(
                 player?.setVideoSurface(holder.surface)
             }
 
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-                // Surface size or format changed
-            }
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
                 player?.setVideoSurface(null)
@@ -143,20 +139,16 @@ class CustomPlayerView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        // Cleanup handlers
         hideHandler.removeCallbacksAndMessages(null)
 
-        // Cleanup all controls
         controls.forEach { control ->
             control.detachPlayer()
         }
         controls.clear()
 
-        // Cleanup surface
         player?.setVideoSurface(null)
         player = null
 
-        // Cleanup views
         controllerContainer = null
     }
 }
