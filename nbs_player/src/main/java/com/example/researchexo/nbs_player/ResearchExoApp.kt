@@ -1,4 +1,4 @@
-package com.example.researchexo
+package com.example.researchexo.nbs_player
 
 import android.content.Context
 import androidx.media3.common.util.UnstableApi

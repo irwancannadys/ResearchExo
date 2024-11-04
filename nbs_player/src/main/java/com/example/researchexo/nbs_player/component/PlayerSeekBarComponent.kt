@@ -1,4 +1,4 @@
-package com.example.researchexo.component
+package com.example.researchexo.nbs_player.component
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -7,10 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.widget.SeekBar
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.media3.common.Player
-import com.example.researchexo.R
-import com.example.researchexo.base.PlayerControl
+import com.example.researchexo.nbs_player.R
+import com.example.researchexo.nbs_player.base.PlayerControl
 
 class PlayerSeekBarComponent @JvmOverloads constructor(
     context: Context,
@@ -128,9 +130,9 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
     }
 
     fun setColors(
-        progressColor: Int = this.progressColor,
-        backgroundColor: Int = this.backgroundColor,
-        thumbColor: Int = this.thumbColor
+        @ColorInt progressColor: Int = this.progressColor,
+        @ColorInt backgroundColor: Int = this.backgroundColor,
+        @ColorInt thumbColor: Int = this.thumbColor
     ) {
         this.progressColor = progressColor
         this.backgroundColor = backgroundColor
@@ -139,5 +141,17 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
         progressTintList = ColorStateList.valueOf(progressColor)
         progressBackgroundTintList = ColorStateList.valueOf(backgroundColor)
         thumbTintList = ColorStateList.valueOf(thumbColor)
+    }
+
+    fun setColorResources(
+        @ColorRes progressColorRes: Int = R.color.white,
+        @ColorRes backgroundColorRes: Int = R.color.white,
+        @ColorRes thumbColorRes: Int = R.color.white
+    ) {
+        setColors(
+            progressColor = context.getColor(progressColorRes),
+            backgroundColor = context.getColor(backgroundColorRes),
+            thumbColor = context.getColor(thumbColorRes)
+        )
     }
 }

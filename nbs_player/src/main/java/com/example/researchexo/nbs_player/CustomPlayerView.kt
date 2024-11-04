@@ -1,4 +1,4 @@
-package com.example.researchexo
+package com.example.researchexo.nbs_player
 
 import android.content.Context
 import android.os.Handler
@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
-import com.example.researchexo.base.PlayerControl
+import com.example.researchexo.nbs_player.base.PlayerControl
 
 @UnstableApi
 class CustomPlayerView @JvmOverloads constructor(

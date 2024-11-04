@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun initializePlayer() {
         try {
-            // Create ExoPlayer instance
             player = ExoPlayer.Builder(this)
                 .setLoadControl(
                     DefaultLoadControl.Builder()
@@ -53,10 +52,13 @@ class MainActivity : AppCompatActivity() {
                 )
                 .build()
                 .also { exoPlayer ->
-                    // Set up player with custom view
                     binding.playerView.setPlayer(exoPlayer)
+                    binding.seekBar.setColors(
+                        progressColor = resources.getColor(R.color.controller_test1),
+                        backgroundColor = resources.getColor(R.color.controller_test3),
+                        thumbColor = resources.getColor(R.color.controller_test2)
+                    )
 
-                    // Create and set up media source
                     val mediaItem = MediaItem.Builder()
                         .setUri(DEMO_VIDEO_URL)
                         .setMimeType(MimeTypes.APPLICATION_MP4)

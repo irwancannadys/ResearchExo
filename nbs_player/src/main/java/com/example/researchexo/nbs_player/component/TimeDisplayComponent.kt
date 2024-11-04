@@ -1,4 +1,4 @@
-package com.example.researchexo.component
+package com.example.researchexo.nbs_player.component
 
 import android.content.Context
 import android.graphics.Color
@@ -7,8 +7,8 @@ import android.os.Looper
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.media3.common.Player
-import com.example.researchexo.R
-import com.example.researchexo.base.PlayerControl
+import com.example.researchexo.nbs_player.R
+import com.example.researchexo.nbs_player.base.PlayerControl
 
 class TimeDisplayComponent @JvmOverloads constructor(
     context: Context,

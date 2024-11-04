@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ResearchExo"
 include(":app")
- 
+include(":nbs_player")

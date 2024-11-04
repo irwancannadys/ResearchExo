@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="controller_background">#40000000</color>
+    <color name="controller_background">#80000000</color>
     <color name="controller_test1">#03A9F4</color>
     <color name="controller_test2">#00BCD4</color>
     <color name="controller_test3">#009688</color>

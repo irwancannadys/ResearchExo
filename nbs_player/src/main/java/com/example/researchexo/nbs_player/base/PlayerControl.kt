@@ -1,4 +1,4 @@
-package com.example.researchexo.base
+package com.example.researchexo.nbs_player.base
 
 import androidx.media3.common.Player
 
