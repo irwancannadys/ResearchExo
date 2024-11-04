@@ -8,7 +8,6 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.widget.SeekBar
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.media3.common.Player
 import com.example.researchexo.nbs_player.R
@@ -49,7 +48,7 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
         }
 
         val thumbOffset = resources.getDimensionPixelSize(R.dimen.seekbar_thumb_size) / 2
-        setPadding(thumbOffset, thumbOffset, 0, thumbOffset)
+        setPadding(thumbOffset, thumbOffset, thumbOffset, thumbOffset)
         minimumHeight = resources.getDimensionPixelSize(R.dimen.seekbar_height)
 
         setupSeekBar()
@@ -57,9 +56,7 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
 
     private fun setupSeekBar() {
         splitTrack = false
-        progressTintList = ColorStateList.valueOf(progressColor)
-        progressBackgroundTintList = ColorStateList.valueOf(backgroundColor)
-        thumbTintList = ColorStateList.valueOf(thumbColor)
+        applyColors()
 
         setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -81,6 +78,12 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
                 startProgressUpdates()
             }
         })
+    }
+
+    private fun applyColors() {
+        progressTintList = ColorStateList.valueOf(progressColor)
+        progressBackgroundTintList = ColorStateList.valueOf(backgroundColor)
+        thumbTintList = ColorStateList.valueOf(thumbColor)
     }
 
     override fun attachPlayer(player: Player) {
@@ -105,11 +108,13 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
 
     private fun updateProgress() {
         player?.let {
-            if (it.duration > 0 && max != it.duration.toInt()) {
-                max = it.duration.toInt()
-            }
-            if (!isDragging && it.duration > 0) {
-                progress = it.currentPosition.toInt()
+            if (it.duration > 0) {
+                if (max != it.duration.toInt()) {
+                    max = it.duration.toInt()
+                }
+                if (!isDragging) {
+                    progress = it.currentPosition.toInt()
+                }
             }
         }
     }
@@ -137,21 +142,6 @@ class PlayerSeekBarComponent @JvmOverloads constructor(
         this.progressColor = progressColor
         this.backgroundColor = backgroundColor
         this.thumbColor = thumbColor
-
-        progressTintList = ColorStateList.valueOf(progressColor)
-        progressBackgroundTintList = ColorStateList.valueOf(backgroundColor)
-        thumbTintList = ColorStateList.valueOf(thumbColor)
-    }
-
-    fun setColorResources(
-        @ColorRes progressColorRes: Int = R.color.white,
-        @ColorRes backgroundColorRes: Int = R.color.white,
-        @ColorRes thumbColorRes: Int = R.color.white
-    ) {
-        setColors(
-            progressColor = context.getColor(progressColorRes),
-            backgroundColor = context.getColor(backgroundColorRes),
-            thumbColor = context.getColor(thumbColorRes)
-        )
+        applyColors()
     }
 }

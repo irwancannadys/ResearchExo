@@ -1,4 +1,4 @@
-package com.example.researchexo.component
+package com.example.researchexo.nbs_player.component
 
 import android.content.Context
 import android.util.AttributeSet

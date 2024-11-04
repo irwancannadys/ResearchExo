@@ -46,7 +46,9 @@ class CustomPlayerView @JvmOverloads constructor(
                 player?.setVideoSurface(holder.surface)
             }
 
-            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+                // Handle surface changes if needed
+            }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
                 player?.setVideoSurface(null)
@@ -93,10 +95,6 @@ class CustomPlayerView @JvmOverloads constructor(
         }
     }
 
-    fun setControllerTimeout(timeoutMs: Long) {
-        controllerTimeout = timeoutMs
-    }
-
     private fun toggleControllerVisibility() {
         if (isControllerVisible) {
             hideController()
@@ -128,27 +126,16 @@ class CustomPlayerView @JvmOverloads constructor(
             it.visibility = if (isControllerVisible) View.VISIBLE else View.GONE
         }
     }
-//
-//    override fun onDetachedFromWindow() {
-//        super.onDetachedFromWindow()
-//        hideHandler.removeCallbacksAndMessages(null)
-//        controls.forEach { it.detachPlayer() }
-//        player?.setVideoSurface(null)
-//        player = null
-//    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         hideHandler.removeCallbacksAndMessages(null)
-
         controls.forEach { control ->
             control.detachPlayer()
         }
         controls.clear()
-
         player?.setVideoSurface(null)
         player = null
-
         controllerContainer = null
     }
 }

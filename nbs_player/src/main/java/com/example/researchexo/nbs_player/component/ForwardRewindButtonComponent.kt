@@ -17,9 +17,10 @@ class ForwardRewindButtonComponent @JvmOverloads constructor(
 
     private var player: Player? = null
     private var isForward: Boolean = true
+    private var seekIncrement: Long = DEFAULT_SEEK_INCREMENT
 
     companion object {
-        private const val SEEK_TIME_MS = 10_000
+        const val DEFAULT_SEEK_INCREMENT = 10_000L // 10 seconds
     }
 
     init {
@@ -39,10 +40,10 @@ class ForwardRewindButtonComponent @JvmOverloads constructor(
                 val currentPosition = it.currentPosition
 
                 if (isForward) {
-                    val seekPosition = minOf(currentPosition + SEEK_TIME_MS, it.duration)
+                    val seekPosition = minOf(currentPosition + seekIncrement, it.duration)
                     it.seekTo(seekPosition)
                 } else {
-                    val seekPosition = maxOf(0, currentPosition - SEEK_TIME_MS)
+                    val seekPosition = maxOf(0, currentPosition - seekIncrement)
                     it.seekTo(seekPosition)
                 }
 
@@ -51,6 +52,10 @@ class ForwardRewindButtonComponent @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    fun setSeekIncrement(increment: Long) {
+        seekIncrement = increment
     }
 
     override fun attachPlayer(player: Player) {
@@ -62,5 +67,6 @@ class ForwardRewindButtonComponent @JvmOverloads constructor(
     }
 
     override fun updateState() {
+        // No state to update
     }
 }

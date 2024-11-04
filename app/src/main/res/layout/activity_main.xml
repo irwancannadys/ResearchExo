@@ -55,7 +55,7 @@
                         android:layout_height="48dp"
                         app:isForward="false" />
 
-                    <com.example.researchexo.component.PlayPauseButtonComponent
+                    <com.example.researchexo.nbs_player.component.PlayPauseButtonComponent
                         android:id="@+id/playPauseButton"
                         android:layout_width="56dp"
                         android:layout_height="56dp"

@@ -18,6 +18,8 @@ class TimeDisplayComponent @JvmOverloads constructor(
 
     private var player: Player? = null
     private val updateHandler = Handler(Looper.getMainLooper())
+    private var isDuration = false
+
     private val updateRunnable = object : Runnable {
         override fun run() {
             updateTime()
@@ -25,12 +27,13 @@ class TimeDisplayComponent @JvmOverloads constructor(
         }
     }
 
-    private var isDuration = false
-
     init {
         context.obtainStyledAttributes(attrs, R.styleable.TimeDisplay).apply {
-            isDuration = getBoolean(R.styleable.TimeDisplay_showDuration, false)
-            recycle()
+            try {
+                isDuration = getBoolean(R.styleable.TimeDisplay_showDuration, false)
+            } finally {
+                recycle()
+            }
         }
         setTextColor(Color.WHITE)
     }
@@ -53,7 +56,10 @@ class TimeDisplayComponent @JvmOverloads constructor(
         val durationOrigin = player?.duration ?: 0L
         val duration = if (durationOrigin < 0) 0L else durationOrigin
         val currentPosition = player?.currentPosition ?: 0L
-        text = formatTime(if (isDuration) duration else currentPosition)
+
+        post {
+            text = formatTime(if (isDuration) duration else currentPosition)
+        }
     }
 
     private fun startUpdate() {
@@ -70,5 +76,16 @@ class TimeDisplayComponent @JvmOverloads constructor(
         val minutes = totalSeconds / 60
         val seconds = totalSeconds % 60
         return String.format("%02d:%02d", minutes, seconds)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stopUpdate()
+        player = null
+    }
+
+    fun setShowDuration(show: Boolean) {
+        isDuration = show
+        updateTime()
     }
 }
