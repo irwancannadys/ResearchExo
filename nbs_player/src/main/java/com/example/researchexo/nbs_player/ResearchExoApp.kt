@@ -10,8 +10,6 @@ import java.io.File
 @UnstableApi
 object ResearchExoApp {
     private var _cache: SimpleCache? = null
-    val cache: SimpleCache
-        get() = _cache ?: throw IllegalStateException("Cache not initialized")
 
     fun initialized(context: Context) {
         if (_cache == null) {

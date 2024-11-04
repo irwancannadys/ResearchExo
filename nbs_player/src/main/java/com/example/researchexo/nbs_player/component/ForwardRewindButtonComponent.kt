@@ -9,7 +9,7 @@ import com.example.researchexo.nbs_player.R
 import com.example.researchexo.nbs_player.base.PlayerControl
 
 @SuppressLint("CustomViewStyleable")
-class ForwardRewindButtonComponent private constructor(
+class ForwardRewindButtonComponent @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

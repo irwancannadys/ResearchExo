@@ -7,7 +7,7 @@ import androidx.media3.common.Player
 import com.example.researchexo.nbs_player.R
 import com.example.researchexo.nbs_player.base.PlayerControl
 
-class PlayPauseButtonComponent private constructor(
+class PlayPauseButtonComponent @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0

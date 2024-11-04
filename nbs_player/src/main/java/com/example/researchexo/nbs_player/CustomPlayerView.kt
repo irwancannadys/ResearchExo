@@ -14,7 +14,7 @@ import androidx.media3.common.util.UnstableApi
 import com.example.researchexo.nbs_player.base.PlayerControl
 
 @UnstableApi
-class CustomPlayerView private constructor(
+class CustomPlayerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
