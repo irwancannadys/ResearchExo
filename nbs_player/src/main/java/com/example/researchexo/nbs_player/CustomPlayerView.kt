@@ -77,7 +77,6 @@ class CustomPlayerView @JvmOverloads constructor(
     }
 
     fun setPlayer(newPlayer: Player) {
-        // Detach current player
         player?.let { oldPlayer ->
             controls.forEach { it.detachPlayer() }
             if (surfaceView.holder.surface != null) {
@@ -85,7 +84,6 @@ class CustomPlayerView @JvmOverloads constructor(
             }
         }
 
-        // Attach new player
         player = newPlayer.also { player ->
             if (surfaceView.holder.surface != null) {
                 player.setVideoSurface(surfaceView.holder.surface)
